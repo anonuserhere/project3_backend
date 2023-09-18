@@ -10,6 +10,8 @@ const knex = require("knex")({
 
 const bookshelf = require("bookshelf")(knex);
 
-console.log("MySQL Connection Configuration:", knex.client.config.connection);
+console.log(`MySQL Connection Configuration: 
+DB: ${knex.client.config.connection.database}
+Host: ${knex.client.config.connection.host}`);
 
 module.exports = bookshelf;

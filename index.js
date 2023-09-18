@@ -19,6 +19,7 @@ app.use(
 
 async function main() {
   app.use("/", require("./routes/index"));
+  app.use("/products", require("./routes/products"));
 }
 
 main();

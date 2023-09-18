@@ -1,0 +1,48 @@
+{{#extends "base"}}
+  {{#block "body"}}
+    <table class="table table-responsive table-striped align-middle mt-3">
+      <thead>
+        <tr scope="row">
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Qty</th>
+          <th scope="col">Description</th>
+          <th scope="col">Image</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each products}}
+          <tr scope="row">
+            <td>
+              {{this.id}}
+            </td>
+            <td>
+              {{this.name}}
+            </td>
+            <td>
+              {{this.price}}
+            </td>
+            <td>
+              {{this.quantity}}
+            </td>
+            <td>
+              {{this.description}}
+            </td>
+            <td><img src={{this.image_url}} class="img-fluid" /></td>
+            <td>
+              <a
+                href="/products/{{this.id}}/update"
+                class="btn btn-primary btn-sm"
+              >Update</a>
+              <a
+                href="/products/{{this.id}}/delete"
+                class="btn btn-danger btn-sm"
+              >Delete</a>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{/block}}
+{{/extends}}
