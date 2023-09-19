@@ -1,48 +1,55 @@
 {{#extends "base"}}
+  {{#block "title"}}Product List{{/block}}
   {{#block "body"}}
-    <table class="table table-responsive table-striped align-middle mt-3">
-      <thead>
-        <tr scope="row">
-          <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Qty</th>
-          <th scope="col">Description</th>
-          <th scope="col">Image</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each products}}
+    <div class="m-3">
+      <table class="table table-responsive table-striped align-middle">
+        <thead>
           <tr scope="row">
-            <td>
-              {{this.id}}
-            </td>
-            <td>
-              {{this.name}}
-            </td>
-            <td>
-              {{this.price}}
-            </td>
-            <td>
-              {{this.quantity}}
-            </td>
-            <td>
-              {{this.description}}
-            </td>
-            <td><img src={{this.image_url}} class="img-fluid" /></td>
-            <td>
-              <a
-                href="/products/{{this.id}}/update"
-                class="btn btn-primary btn-sm"
-              >Update</a>
-              <a
-                href="/products/{{this.id}}/delete"
-                class="btn btn-danger btn-sm"
-              >Delete</a>
-            </td>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price (in cents)</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Description</th>
+            <th scope="col">Image</th>
           </tr>
-        {{/each}}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {{#each products}}
+            <tr scope="row">
+              <td>
+                {{this.id}}
+              </td>
+              <td>
+                {{this.name}}
+              </td>
+              <td>
+                {{this.price}}
+              </td>
+              <td>
+                {{this.quantity}}
+              </td>
+              <td>
+                {{this.description}}
+              </td>
+              <td><img
+                  id="image"
+                  src="https://ucarecdn.com/{{this.image}}/-/preview/150x150/-/quality/smart_retina/-/format/auto/"
+                  class="img-fluid"
+                /></td>
+              <td>
+                <a
+                  href="/products/{{this.id}}/edit"
+                  class="btn btn-primary btn-sm m-1"
+                >Edit</a>
+                <a
+                  href="/products/{{this.id}}/delete"
+                  class="btn btn-danger btn-sm m-1"
+                >Delete</a>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
   {{/block}}
 {{/extends}}

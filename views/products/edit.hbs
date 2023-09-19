@@ -1,7 +1,7 @@
 {{#extends "base"}}
-  {{#block "title"}}Create New Product{{/block}}
+  {{#block "title"}}Edit Product{{/block}}
   {{#block "body"}}
-    <h2 class="ms-2 mt-1">Add New Product</h2>
+    <h2 class="ms-2 mt-1">Edit Product: {{product.name}}</h2>
     <div>
       <form id="form" class="m-4" method="post">
         <div class="mb-2">
@@ -13,13 +13,17 @@
           >
           </lr-file-uploader-regular>
         </div>
-        <div id="img_container mb-2 mt-2">
-          <img class="img-fluid" id="uploaded-img" src="" />
+        <div class="img-container mt-2 mb-2">
+          <img
+            src="https://ucarecdn.com/{{product.image}}/-/preview/300x300/-/quality/smart_retina/-/format/auto/"
+            class="img-fluid"
+            id="uploaded-image"
+          />
         </div>
         {{{form}}}
         <input type="hidden" name="image" value="" id="image" />
         <div class="mt-2">
-          <input type="submit" value="Create" class="btn btn-primary" />
+          <input type="submit" value="Edit" class="btn btn-primary" />
         </div>
       </form>
     </div>
@@ -43,8 +47,8 @@
     <script>
       window.addEventListener('LR_UPLOAD_FINISH', (e) => { e.preventDefault();
       uuid = e.detail.data[0].uuid; document.querySelector("#image").value =
-      uuid;
-      document.querySelector("#uploaded-img").src=`https://ucarecdn.com/${uuid}/-/preview/450x450/-/quality/smart_retina/-/format/auto/`;
+      uuid; console.log(uuid);
+      document.querySelector("#uploaded-image").src=`https://ucarecdn.com/${uuid}/-/preview/450x450/-/quality/smart_retina/-/format/auto/`;
       });
     </script>
   {{/block}}

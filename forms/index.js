@@ -1,5 +1,6 @@
 const forms = require("forms");
 const fields = forms.fields;
+const widgets = forms.widgets;
 const validators = forms.validators;
 
 var bootstrapField = function (name, object) {
@@ -45,6 +46,7 @@ const createProductForm = () => {
       cssClasses: {
         label: ["form-label"],
       },
+      validators: [validators.integer()],
     }),
     quantity: fields.string({
       required: true,
@@ -52,6 +54,7 @@ const createProductForm = () => {
       cssClasses: {
         label: ["form-label"],
       },
+      validators: [validators.integer()],
     }),
     description: fields.string({
       required: true,
@@ -62,10 +65,7 @@ const createProductForm = () => {
     }),
     image: fields.string({
       required: false,
-      errorAfterField: true,
-      cssClasses: {
-        label: ["form-label"],
-      },
+      widget: widgets.hidden(),
     }),
   });
 };
