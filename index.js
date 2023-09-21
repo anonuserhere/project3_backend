@@ -6,6 +6,7 @@ const wax = require("wax-on");
 const session = require("express-session");
 const flash = require("connect-flash");
 const FileStore = require("session-file-store")(session);
+const csrf = require("csurf");
 
 let app = express();
 app.use(cors());
@@ -15,19 +16,24 @@ wax.on(hbs.handlebars);
 wax.setLayoutPath("./views/layouts");
 
 app.use(
+  session({
+    store: new FileStore(),
+    secret: process.env.FS_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(
   express.urlencoded({
     extended: false,
   })
 );
 
-app.use(
-  session({
-    store: new FileStore(),
-    secret: process.env.FS_SECRET,
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+app.use(function (req, res, next) {
+  res.locals.user = req.session.user;
+  next();
+});
 
 app.use(flash());
 app.use(function (req, res, next) {
@@ -36,10 +42,26 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.use(csrf());
+app.use(function (err, req, res, next) {
+  if (err && err.code == "EBADCSRFTOKEN") {
+    req.flash("error_msg", "Form expired. Please try again");
+    res.redirect("back");
+  } else {
+    next();
+  }
+});
+
+app.use(function (req, res, next) {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 async function main() {
   app.use("/", require("./routes/index"));
   app.use("/products", require("./routes/products"));
   app.use("/orders", require("./routes/orders"));
+  app.use("/users", require("./routes/users"));
 }
 
 main();

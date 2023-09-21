@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { bootstrapField, createProductForm } = require("../forms");
 const { Product } = require("../models");
+const { checkIfAuth } = require("../middleware");
 
 router.get("/", async (req, res) => {
   let products = await Product.collection().fetch();
@@ -10,7 +11,7 @@ router.get("/", async (req, res) => {
   });
 });
 
-router.get("/create", async (req, res) => {
+router.get("/create", [checkIfAuth], async (req, res) => {
   const productForm = createProductForm();
   res.render("products/create", {
     UC_PUBLIC: process.env.UC_PUBLIC,
@@ -18,7 +19,7 @@ router.get("/create", async (req, res) => {
   });
 });
 
-router.post("/create", async (req, res) => {
+router.post("/create", [checkIfAuth], async (req, res) => {
   const productForm = createProductForm();
   productForm.handle(req, {
     success: async (form) => {
@@ -41,7 +42,7 @@ router.post("/create", async (req, res) => {
   });
 });
 
-router.get("/:id/edit", async (req, res) => {
+router.get("/:id/edit", [checkIfAuth], async (req, res) => {
   const id = req.params.id;
   const product = await Product.where({
     id: id,
@@ -62,7 +63,7 @@ router.get("/:id/edit", async (req, res) => {
   });
 });
 
-router.post("/:id/edit", async (req, res) => {
+router.post("/:id/edit", [checkIfAuth], async (req, res) => {
   const id = req.params.id;
   const product = await Product.where({
     id: id,
@@ -70,23 +71,23 @@ router.post("/:id/edit", async (req, res) => {
     require: true,
   });
 
+  const originalImage = product.attributes.image;
   const productForm = createProductForm();
   productForm.handle(req, {
     success: async (form) => {
-      originalImage = form.data.image;
       product.set({
         name: form.data.name,
         price: form.data.price,
         quantity: form.data.quantity,
         description: form.data.description,
       });
-      console.log("form data: ", form.data);
       if (form.data.image.slice(1)) {
         product.set("image", null);
         product.set("image", form.data.image.slice(1));
       } else {
         product.set("image", originalImage);
       }
+      console.log("form data: ", form.data);
       await product.save();
       req.flash(
         "success_msg",
@@ -103,7 +104,7 @@ router.post("/:id/edit", async (req, res) => {
   });
 });
 
-router.get("/:id/delete", async (req, res) => {
+router.get("/:id/delete", [checkIfAuth], async (req, res) => {
   const product = await Product.where({
     id: req.params.id,
   }).fetch({
@@ -114,7 +115,7 @@ router.get("/:id/delete", async (req, res) => {
   });
 });
 
-router.post("/:id/delete", async (req, res) => {
+router.post("/:id/delete", [checkIfAuth], async (req, res) => {
   const product = await Product.where({
     id: req.params.id,
   }).fetch({

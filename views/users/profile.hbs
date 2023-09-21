@@ -1,0 +1,12 @@
+{{#extends "base"}}
+  {{#block "title"}}User Profile{{/block}}
+  {{#block "body"}}
+    <h2 class="ms-2 mt-1">User Profile</h2>
+    <div class="m-4">
+      <ul>
+        <li>Username: {{user.username}}</li>
+        <li>Email: {{user.email}}</li>
+      </ul>
+    </div>
+  {{/block}}
+{{/extends}}
