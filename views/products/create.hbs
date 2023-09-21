@@ -26,6 +26,11 @@
   {{/block}}
 
   {{#block "js"}}
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      console.log(form.data);
+    })
+  </script>
     <script type="module">
       import * as LR from
       "https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.25.0/web/lr-file-uploader-regular.min.js";
@@ -41,11 +46,12 @@
       source-list="local, url, camera"
     ></lr-config>
     <script>
-      window.addEventListener('LR_UPLOAD_FINISH', (e) => { e.preventDefault();
-      uuid = e.detail.data[0].uuid; document.querySelector("#image").value =
-      uuid;
-      document.querySelector("#uploaded-img").src=`https://ucarecdn.com/${uuid}/-/preview/450x450/-/quality/smart_retina/-/format/auto/`;
-      });
+      window.addEventListener("LR_UPLOAD_FINISH", (e) => { e.preventDefault();
+      const uuid = e.detail.data[0].uuid; if (uuid) { console.log("uuid: ",
+      uuid); document.querySelector("#image").value = uuid;
+      document.querySelector( "#uploaded-img" ).src =
+      `https://ucarecdn.com/${uuid}/-/preview/450x450/-/quality/smart_retina/-/format/auto/`;
+      } });
     </script>
   {{/block}}
 {{/extends}}

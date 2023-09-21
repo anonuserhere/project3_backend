@@ -4,12 +4,11 @@
     <h2 class="ms-2 mt-1">Edit Product: {{product.name}}</h2>
     <div>
       <form id="form" class="m-4" method="post">
-        <div class="mb-2">
+        <div class="mb-2" id="uc-widget">
           <lr-file-uploader-regular
             css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.25.0/web/lr-file-uploader-regular.min.css"
             ctx-name="my-uploader"
             class="my-config"
-            id="uc-widget"
           >
           </lr-file-uploader-regular>
         </div>
@@ -40,16 +39,17 @@
       ctx-name="my-uploader"
       pubkey="{{UC_PUBLIC}}"
       max-local-file-size-bytes="5000000"
-      multiple-max="1"
+      multiple-max="3"
       img-only="true"
       source-list="local, url, camera"
     ></lr-config>
+
     <script>
       window.addEventListener('LR_UPLOAD_FINISH', (e) => { e.preventDefault();
-      uuid = e.detail.data[0].uuid; document.querySelector("#image").value =
-      uuid; console.log(uuid);
+      const uuid = e.detail.data[0].uuid; if (uuid) {
+      document.querySelector("#image").value = uuid;
       document.querySelector("#uploaded-image").src=`https://ucarecdn.com/${uuid}/-/preview/450x450/-/quality/smart_retina/-/format/auto/`;
-      });
+      } })
     </script>
   {{/block}}
 {{/extends}}

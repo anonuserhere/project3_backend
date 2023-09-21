@@ -29,6 +29,8 @@ router.post("/create", async (req, res) => {
       product.set("description", form.data.description);
       product.set("image", form.data.image.slice(1));
       await product.save();
+      console.log("product: ", product);
+      req.flash("success_msg", `New Product ${product.get("name")} created`);
       res.redirect("/products");
     },
     error: async (form) => {
@@ -71,15 +73,25 @@ router.post("/:id/edit", async (req, res) => {
   const productForm = createProductForm();
   productForm.handle(req, {
     success: async (form) => {
+      originalImage = form.data.image;
       product.set({
         name: form.data.name,
         price: form.data.price,
         quantity: form.data.quantity,
         description: form.data.description,
       });
-      console.log(form.data);
-      product.set("image", form.data.image.slice(1));
-      product.save();
+      console.log("form data: ", form.data);
+      if (form.data.image.slice(1)) {
+        product.set("image", null);
+        product.set("image", form.data.image.slice(1));
+      } else {
+        product.set("image", originalImage);
+      }
+      await product.save();
+      req.flash(
+        "success_msg",
+        `Product ${product.get("name")} edited successfully`
+      );
       res.redirect("/products");
     },
     error: async (form) => {
@@ -109,6 +121,8 @@ router.post("/:id/delete", async (req, res) => {
     require: true,
   });
   await product.destroy();
+  console.log("Product deleted");
+  req.flash("success_msg", "Product deleted successfully");
   res.redirect("/products");
 });
 
