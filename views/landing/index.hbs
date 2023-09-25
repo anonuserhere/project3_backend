@@ -1,8 +1,15 @@
 {{#extends "base"}}
   {{#block "title"}}Landing Page{{/block}}
   {{#block "body"}}
-    <h2 class="ms-2 mt-1">
-      Please login to continue...
-    </h2>
+    {{#if user}}
+      <h2 class="ms-2 mt-1">
+        Welcome back,
+        {{user.username}}
+      </h2>
+    {{else}}
+      <h2 class="ms-2 mt-1">
+        Please login to continue...
+      </h2>
+    {{/if}}
   {{/block}}
 {{/extends}}

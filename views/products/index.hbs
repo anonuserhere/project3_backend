@@ -1,6 +1,13 @@
 {{#extends "base"}}
   {{#block "title"}}Product List{{/block}}
   {{#block "body"}}
+    <div class="m-4">
+      <form id="form" method="get">
+        {{{form}}}
+        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+        <input type="submit" class="btn btn-primary mt-2 mb-1" value="Search" />
+      </form>
+    </div>
     <div class="m-3">
       <table class="table table-responsive table-striped align-middle">
         <thead>
@@ -11,6 +18,7 @@
             <th scope="col">Qty</th>
             <th scope="col">Description</th>
             <th scope="col">Image</th>
+            <th scope="col">Category</th>
           </tr>
         </thead>
         <tbody>
@@ -36,6 +44,9 @@
                   src="https://ucarecdn.com/{{this.image}}/-/preview/150x150/-/quality/smart_retina/-/format/auto/"
                   class="img-fluid"
                 /></td>
+              <td>
+                {{this.category.name}}
+              </td>
               <td>
                 <a
                   href="/products/{{this.id}}/edit"

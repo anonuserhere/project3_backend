@@ -1,18 +1,70 @@
 const express = require("express");
 const router = express.Router();
-const { bootstrapField, createProductForm } = require("../forms");
-const { Product } = require("../models");
+const {
+  bootstrapField,
+  createProductForm,
+  createSearchForm,
+} = require("../forms");
+const { Product, Category } = require("../models");
 const { checkIfAuth } = require("../middleware");
 
 router.get("/", async (req, res) => {
-  let products = await Product.collection().fetch();
-  res.render("products/index", {
-    products: products.toJSON(),
+  const allCategories = await Category.fetchAll().map((category) => {
+    return [category.get("id"), category.get("name")];
+  });
+  allCategories.unshift([0, "Choose a category below:"]);
+  const searchForm = createSearchForm(allCategories);
+  let query = Product.collection();
+
+  searchForm.handle(req, {
+    success: async (form) => {
+      if (form.data.name) {
+        query.where("name", "like", "%" + form.data.name + "%");
+      }
+      if (form.data.category_id && form.data.category_id != "0") {
+        query.where("category_id", "=", form.data.category_id);
+      }
+      if (form.data.min_cost) {
+        query.where("price", ">=", form.data.min_cost);
+      }
+      if (form.data.max_cost) {
+        query.where("price", "<=", form.data.max_cost);
+      }
+      const products = await query.fetch({
+        withRelated: ["category"],
+      });
+      console.log(form.data);
+      res.render("products/index", {
+        products: products.toJSON(),
+        form: form.toHTML(bootstrapField),
+      });
+    },
+    empty: async (form) => {
+      const products = await Product.collection().fetch({
+        withRelated: ["category"],
+      });
+      res.render("products/index", {
+        products: products.toJSON(),
+        form: form.toHTML(bootstrapField),
+      });
+    },
+    error: async (form) => {
+      const products = await Product.collection().fetch({
+        withRelated: ["category"],
+      });
+      res.render("products/index", {
+        products: products.toJSON(),
+        form: form.toHTML(bootstrapField),
+      });
+    },
   });
 });
 
 router.get("/create", [checkIfAuth], async (req, res) => {
-  const productForm = createProductForm();
+  const allCategories = await Category.fetchAll().map((category) => {
+    return [category.get("id"), category.get("name")];
+  });
+  const productForm = createProductForm(allCategories);
   res.render("products/create", {
     UC_PUBLIC: process.env.UC_PUBLIC,
     form: productForm.toHTML(bootstrapField),
@@ -24,11 +76,13 @@ router.post("/create", [checkIfAuth], async (req, res) => {
   productForm.handle(req, {
     success: async (form) => {
       const product = new Product();
+      console.log(form.data);
       product.set("name", form.data.name);
       product.set("price", form.data.price);
       product.set("quantity", form.data.quantity);
       product.set("description", form.data.description);
       product.set("image", form.data.image.slice(1));
+      product.set("category_id", form.data.category_id);
       await product.save();
       console.log("product: ", product);
       req.flash("success_msg", `New Product ${product.get("name")} created`);
@@ -50,7 +104,10 @@ router.get("/:id/edit", [checkIfAuth], async (req, res) => {
     require: true,
   });
 
-  const productForm = createProductForm();
+  const allCategories = await Category.fetchAll().map((category) => {
+    return [category.get("id"), category.get("name")];
+  });
+  const productForm = createProductForm(allCategories);
   productForm.fields.name.value = product.get("name");
   productForm.fields.price.value = product.get("price");
   productForm.fields.quantity.value = product.get("quantity");
