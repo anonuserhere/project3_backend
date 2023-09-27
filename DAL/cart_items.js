@@ -44,16 +44,20 @@ const removeFromCart = async (userId, productId) => {
 
 const updateQuantity = async (
   cartItem = null,
-  // userId = null,
-  // productId = null,
+  userId = null,
+  productId = null,
   newQty = null
 ) => {
-  if (!cartItem) {
-    cartItem = await getCartItemByUserAndProduct(userId, productId);
-  }
-  if (cartItem) {
-    cartItem.set("quantity", newQty);
-    await cartItem.save();
+  try {
+    if (!cartItem) {
+      cartItem = await getCartItemByUserAndProduct(userId, productId);
+    }
+    if (cartItem) {
+      cartItem.set("quantity", newQty);
+      await cartItem.save();
+    }
+  } catch (error) {
+    console.error("update error: ", error);
   }
 };
 

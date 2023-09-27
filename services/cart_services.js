@@ -33,9 +33,9 @@ const removeFromCart = async (userId, productId) => {
 const setQuantity = async (userId, productId, newQty) => {
   await cartDataLayer.updateQuantity(
     (cartItem = null),
-    // (userId = userId),
-    // (productId = productId),
-    (newQty = newQty)
+    userId,
+    productId,
+    newQty
   );
 };
 

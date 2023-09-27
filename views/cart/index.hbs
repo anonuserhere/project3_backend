@@ -2,7 +2,7 @@
   {{#block "title"}}Shopping Cart {{/block}}
   {{#block "body"}}
     <h2 class="ms-2 mt-1">{{user.username}}'s Shopping Cart</h2>
-    <div>
+      <div>
         {{#if cart}}
           {{#each cart}}
             <div class="m-2">
@@ -11,13 +11,30 @@
               Qty:
               {{this.quantity}} </br>
             </div>
-          {{/each}}
-        {{else}}
-          <h2 class="ms-2 mt-1">
-            Please buy something... Please?
-          </h2>
-        {{/if}}
-      </ul>
+            <div class="ms-2">
+              <div class="d-flex flex-row m-2">
+              <form method="post" action="/cart/{{this.product.id}}/edit">
+                <input type="hidden" name="_csrf" value="{{../csrfToken}}"/>
+                <input type="number" value="{{this.quantity}}" name="newQty" />
+                <button class="btn btn-info btn-sm">Update Quantity</button>
+              </form>
+              <form method="post" action="/cart/{{this.product.id}}/delete">
+                <input type="hidden" name="_csrf" value="{{../csrfToken}}"/>
+                <a href="#" class="btn btn-danger btn-sm ms-1" onclick="
+                event.preventDefault();
+                event.target.parentNode.submit();
+                ">Delete</a>
+              </form>
+              </div>
+            </div>
     </div>
+        {{/each}}
+        {{else}}
+        <div>
+          <h2 class="ms-2 mt-1">
+            Please buy something... Please? 😢
+          </h2>
+        </div>
+        {{/if}}
   {{/block}}
 {{/extends}}
