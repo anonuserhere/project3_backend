@@ -7,11 +7,10 @@ const {
 } = require("../forms");
 const { Product, Category } = require("../models");
 const { checkIfAuth } = require("../middleware");
+const dataLayer = require("../DAL/products");
 
 router.get("/", async (req, res) => {
-  const allCategories = await Category.fetchAll().map((category) => {
-    return [category.get("id"), category.get("name")];
-  });
+  const allCategories = await dataLayer.getAllCategories();
   allCategories.unshift([0, "Choose a category below:"]);
   const searchForm = createSearchForm(allCategories);
   let query = Product.collection();
@@ -61,9 +60,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/create", [checkIfAuth], async (req, res) => {
-  const allCategories = await Category.fetchAll().map((category) => {
-    return [category.get("id"), category.get("name")];
-  });
+  const allCategories = await dataLayer.getAllCategories();
   const productForm = createProductForm(allCategories);
   res.render("products/create", {
     UC_PUBLIC: process.env.UC_PUBLIC,
@@ -96,7 +93,7 @@ router.post("/create", [checkIfAuth], async (req, res) => {
   });
 });
 
-router.get("/:id/edit", [checkIfAuth], async (req, res) => {
+router.post("/:id/edit", [checkIfAuth], async (req, res) => {
   const id = req.params.id;
   const product = await Product.where({
     id: id,
@@ -104,9 +101,7 @@ router.get("/:id/edit", [checkIfAuth], async (req, res) => {
     require: true,
   });
 
-  const allCategories = await Category.fetchAll().map((category) => {
-    return [category.get("id"), category.get("name")];
-  });
+  const allCategories = await dataLayer.getAllCategories();
   const productForm = createProductForm(allCategories);
   productForm.fields.name.value = product.get("name");
   productForm.fields.price.value = product.get("price");

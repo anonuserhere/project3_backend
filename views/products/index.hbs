@@ -48,6 +48,12 @@
                 {{this.category.name}}
               </td>
               <td>
+                <form method="post" action="/cart/{{this.id}}/add">
+                  <input type="hidden" name="_csrf" value="{{../csrfToken}}" />
+                  <button
+                    class="btn btn-info btn-sm">
+                  Add To Cart</button>
+                </form>
                 <a
                   href="/products/{{this.id}}/edit"
                   class="btn btn-primary btn-sm m-1"

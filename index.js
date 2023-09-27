@@ -57,11 +57,17 @@ app.use(function (req, res, next) {
   next();
 });
 
+// app.use((err, req, res, next) => {
+//   console.error("Error: ", err);
+//   res.status(500).send("Something went wrong.");
+// });
+
 async function main() {
   app.use("/", require("./routes/index"));
   app.use("/products", require("./routes/products"));
   app.use("/orders", require("./routes/orders"));
   app.use("/users", require("./routes/users"));
+  app.use("/cart", require("./routes/cart"));
 }
 
 main();

@@ -28,4 +28,11 @@ const Category = bookshelf.model("Category", {
   },
 });
 
-module.exports = { Product, User, Category, Tags };
+const CartItem = bookshelf.model("CartItem", {
+  tableName: "cart_items",
+  product() {
+    return this.belongsTo("Product");
+  },
+});
+
+module.exports = { Product, User, Category, Tags, CartItem };
